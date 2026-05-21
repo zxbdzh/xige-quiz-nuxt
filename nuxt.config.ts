@@ -1,0 +1,78 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-01-01',
+  devtools: { enabled: true },
+
+  // SSR + Node server output
+  ssr: true,
+  nitro: {
+    preset: 'node-server',
+    // 让 server/data 下的文件以 `assets:data` 命名空间通过 useStorage 取用
+    serverAssets: [
+      { baseName: 'data', dir: 'server/data' },
+    ],
+  },
+
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxt/icon',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+  ],
+
+  icon: {
+    serverBundle: 'local',
+    clientBundle: {
+      scan: true,
+    },
+  },
+
+  css: ['~/assets/css/main.css'],
+
+  tailwindcss: {
+    cssPath: '~/assets/css/main.css',
+    configPath: '~/tailwind.config.ts',
+    exposeConfig: false,
+    viewer: false,
+  },
+
+  app: {
+    head: {
+      htmlAttrs: { lang: 'zh-CN' },
+      title: '习概练习题库 · 2025',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+        { name: 'description', content: '《习近平新时代中国特色社会主义思想概论》自考练习题库,基于 2025 重点笔记自动生成' },
+      ],
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      appName: '习概练习题库',
+      version: '1.0.0',
+    },
+  },
+
+  // 这些路由强依赖 localStorage(进度、错题、收藏等),走 CSR 即可,
+  // 避免 SSR/CSR 状态不一致导致 Vue hydration mismatch
+  routeRules: {
+    '/practice/**': { ssr: false },
+    '/wrong': { ssr: false },
+    '/stats': { ssr: false },
+  },
+
+  // 我们不用路由 manifest 预取,关掉避免 Nuxt 3.21 + pnpm 严格 hoisting 下
+  // "#app-manifest" 虚拟模块解析时序问题
+  experimental: {
+    appManifest: false,
+  },
+
+  // 帮 Vite 显式跳过这个虚拟模块的预打包探测
+  vite: {
+    optimizeDeps: {
+      exclude: ['#app-manifest'],
+    },
+  },
+})
