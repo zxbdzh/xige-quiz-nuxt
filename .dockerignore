@@ -1,6 +1,7 @@
 # 构建产物（多阶段构建已在 Dockerfile 内复制）
 node_modules/
 .pnpm-store/
+.docker-cache/
 
 # 开发文件
 .env

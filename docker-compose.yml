@@ -5,6 +5,11 @@ services:
       dockerfile: Dockerfile
       args:
         NPM_REGISTRY: "https://registry.npmmirror.com"
+      # 缓存构建层，加速重复构建
+      cache-from:
+        - type=local,src=./.docker-cache/node_modules
+      cache-to:
+        - type=local,dest=./.docker-cache/node_modules,mode=max
     container_name: xige-quiz
     restart: unless-stopped
     ports:
@@ -12,8 +17,11 @@ services:
     volumes:
       # 持久化 SQLite 数据库
       - quiz_data:/app/data
-      # 生产环境用 .env 文件
+      # 生产环境配置
       - ./prod.env:/app/.env:ro
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Shanghai
 
 volumes:
   quiz_data:
