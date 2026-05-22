@@ -32,6 +32,14 @@ export const auth = betterAuth({
       }
     : undefined,
 
+  // OAuth 自动关联同邮箱的已有账户
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['email-password', 'github'],
+    },
+  },
+
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 天
     updateAge: 60 * 60 * 24, // 每天滑动续期
