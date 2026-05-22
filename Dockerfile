@@ -14,8 +14,8 @@ RUN npm install -g pnpm --registry=$NPM_REGISTRY
 # 设置 npm 镜像
 RUN pnpm config set registry $NPM_REGISTRY
 
-COPY package.json pnpm-lock.yaml ./
-COPY .npmrc .npmrc 2>/dev/null || true
+COPY package.json pnpm-lock.yaml .npmrc ./
+RUN touch .npmrc 2>/dev/null || true
 
 # 安装依赖（包括 native 模块）
 RUN pnpm install --frozen-lockfile
@@ -37,8 +37,8 @@ COPY --from=builder /app/node_modules ./node_modules
 # 复制构建产物
 COPY --from=builder /app/.output ./.output
 
-# 复制数据目录
-COPY --from=builder /app/data ./data 2>/dev/null || true
+# 复制数据目录（如果存在）
+RUN mkdir -p data
 
 EXPOSE 3000
 
