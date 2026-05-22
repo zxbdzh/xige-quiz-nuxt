@@ -12,22 +12,8 @@ services:
     volumes:
       # 持久化 SQLite 数据库
       - quiz_data:/app/data
-      # 可选：持久化 .env（生产环境建议用 docker secret 或 env_file）
-      # - ./prod.env:/app/.env:ro
-    environment:
-      NODE_ENV: production
-      HOST: 0.0.0.0
-      PORT: 3000
-      # 生产环境必须设置这些
-      BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-change-me-in-production}"
-      BETTER_AUTH_URL: "${BETTER_AUTH_URL:-https://your-domain.com}"
-      DB_PATH: ./data/app.db
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/meta"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      # 生产环境用 .env 文件
+      - ./prod.env:/app/.env:ro
 
 volumes:
   quiz_data:
