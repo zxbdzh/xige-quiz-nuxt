@@ -10,7 +10,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 # 安装 pnpm（利用 Docker 缓存层）
-RUN npm install -g pnpm@9 --registry=$NPM_REGISTRY
+RUN npm install -g pnpm@11 --registry=$NPM_REGISTRY
 
 # 设置 npm 镜像
 RUN pnpm config set registry $NPM_REGISTRY
