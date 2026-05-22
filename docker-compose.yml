@@ -5,11 +5,6 @@ services:
       dockerfile: Dockerfile
       args:
         NPM_REGISTRY: "https://registry.npmmirror.com"
-      # 缓存构建层，加速重复构建
-      cache-from:
-        - type=local,src=./.docker-cache/node_modules
-      cache-to:
-        - type=local,dest=./.docker-cache/node_modules,mode=max
     container_name: xige-quiz
     restart: unless-stopped
     ports:

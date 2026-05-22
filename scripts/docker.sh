@@ -3,6 +3,10 @@
 
 set -e
 
+# 启用 BuildKit 构建缓存
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
