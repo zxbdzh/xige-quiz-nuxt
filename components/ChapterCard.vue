@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between gap-2">
       <div class="overline text-brand inline-flex items-center gap-1.5">
         <span class="w-1 h-1 rounded-full" style="background: var(--brand);" />
-        {{ chap.id === 'ch00' ? '导论' : `第 ${chineseNo} 章` }}
+        {{ chapterLabel(chap) }}
       </div>
       <ClientOnly>
         <span
@@ -11,9 +11,10 @@
           class="tag tag--ok shrink-0"
           :title="`已完成 ${stats.done} / ${stats.total}`"
         >
-          <Icon name="lucide:check" class="w-3 h-3" />
+          <Icon name="lucide:check" class="w-3 h-3" aria-hidden="true" />
           {{ stats.accuracy }}%
         </span>
+        <template #fallback />
       </ClientOnly>
     </div>
 
@@ -23,24 +24,29 @@
 
     <div class="flex items-center gap-3 text-caption text-mute">
       <span v-if="chap.mcqCount" class="inline-flex items-center gap-1">
-        <Icon name="lucide:file-text" class="w-3.5 h-3.5" />
+        <Icon name="lucide:file-text" class="w-3.5 h-3.5" aria-hidden="true" />
         {{ chap.mcqCount }} 题
       </span>
       <span v-if="chap.kpCount" class="inline-flex items-center gap-1">
-        <Icon name="lucide:book-open" class="w-3.5 h-3.5" />
+        <Icon name="lucide:book-open" class="w-3.5 h-3.5" aria-hidden="true" />
         {{ chap.kpCount }} 知识点
       </span>
       <ClientOnly>
         <span v-if="stats && stats.done" class="inline-flex items-center gap-1 ml-auto text-faint">
           {{ stats.done }}/{{ stats.total }}
         </span>
+        <template #fallback />
       </ClientOnly>
     </div>
 
     <ClientOnly>
-      <div class="chap-bar"><div :style="{ width: progressPct + '%' }" /></div>
+      <UiProgress
+        :value="stats?.done ?? 0"
+        :max="stats?.total ?? 1"
+        class="mt-1"
+      />
       <template #fallback>
-        <div class="chap-bar"><div style="width:0%" /></div>
+        <div class="h-1.5 rounded-full" style="background: var(--bg-elev-2);" />
       </template>
     </ClientOnly>
 
@@ -50,7 +56,7 @@
         :to="`/practice/sequential?ch=${encodeURIComponent(chap.id)}`"
         class="btn btn--sm flex-1"
       >
-        <Icon name="lucide:play" class="w-3.5 h-3.5" />
+        <Icon name="lucide:play" class="w-3.5 h-3.5" aria-hidden="true" />
         练习
       </NuxtLink>
       <NuxtLink
@@ -58,7 +64,7 @@
         :to="`/kp/${chap.id}`"
         class="btn btn--ghost btn--sm flex-1"
       >
-        <Icon name="lucide:book-open" class="w-3.5 h-3.5" />
+        <Icon name="lucide:book-open" class="w-3.5 h-3.5" aria-hidden="true" />
         速览
       </NuxtLink>
     </div>
@@ -73,12 +79,5 @@ const props = defineProps<{
   stats?: { done: number; total: number; correct: number; accuracy: number }
 }>()
 
-const progressPct = computed(() => {
-  if (!props.stats || !props.stats.total) return 0
-  return Math.round((props.stats.done / props.stats.total) * 100)
-})
-
-const chineseNo = computed(() => {
-  return props.chap.id.replace(/^ch_/, '').replace('00', '')
-})
+const { chapterLabel } = useChapterLabel()
 </script>

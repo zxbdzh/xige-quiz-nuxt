@@ -28,11 +28,12 @@ export const useBankMeta = () => {
   })
 }
 
-/** 单章 */
-export const useChapter = (id: string) => {
-  return useFetch<Chapter>(() => `/api/chapter/${encodeURIComponent(id)}`, {
-    key: `chap-${id}`,
+/** 单章,watch 防止客户端导航数据不刷新 */
+export const useChapter = (id: Ref<string> | ComputedRef<string>) => {
+  return useFetch<Chapter>(() => `/api/chapter/${encodeURIComponent(unref(id))}`, {
+    key: () => `chap-${unref(id)}`,
     server: true,
+    watch: [id],
   })
 }
 

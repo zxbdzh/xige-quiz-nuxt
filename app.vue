@@ -1,10 +1,12 @@
 <template>
   <div class="min-h-screen flex flex-col">
+    <a href="#main" class="skip-link">跳到主要内容</a>
     <AppHeader />
-    <main class="flex-1 w-full max-w-[1080px] mx-auto px-5 py-7 sm:px-6">
+    <main id="main" class="flex-1 w-full max-w-[1080px] mx-auto px-5 py-7 sm:px-6">
       <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
     </main>
     <AppFooter />
+    <AppDialogHost />
   </div>
 </template>
 
@@ -22,11 +24,19 @@ useHead({
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600&display=swap',
     },
     {
       rel: 'icon',
-      href: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22%3E%3Cstop offset=%220%25%22 stop-color=%22%232563EB%22/%3E%3Cstop offset=%22100%25%22 stop-color=%22%2306B6D4%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22url(%23g)%22/%3E%3Ctext x=%2250%22 y=%2270%22 text-anchor=%22middle%22 font-size=%2258%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22700%22%3E%E4%B9%A0%3C/text%3E%3C/svg%3E',
+      href: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 rx=%2216%22 fill=%22%231F6F50%22/%3E%3Ctext x=%2250%22 y=%2270%22 text-anchor=%22middle%22 font-size=%2258%22 fill=%22%23fff%22 font-family=%22sans-serif%22 font-weight=%22700%22%3E%E4%B9%A0%3C/text%3E%3C/svg%3E',
+    },
+  ],
+  script: [
+    // 防 FOUC:读取 persistedstate 中的主题,在首屏渲染前应用
+    {
+      key: 'theme-init',
+      tagPosition: 'head' as const,
+      innerHTML: `(function(){try{var s=JSON.parse(localStorage.getItem('xige-quiz:v2')||'{}');if(s.state&&s.state.theme==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})()`,
     },
   ],
 })
