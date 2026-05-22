@@ -31,6 +31,7 @@
       </nav>
 
       <div class="flex items-center gap-1.5 ml-auto md:ml-0">
+        <UserMenu />
         <ThemeToggle />
         <button
           @click="mobileOpen = !mobileOpen"

@@ -12,3 +12,9 @@ dist
 !.vscode/settings.json
 .idea
 *.log
+
+# SQLite 运行时数据库
+data/*.db
+data/*.db-journal
+data/*.db-shm
+data/*.db-wal

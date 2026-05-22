@@ -79,6 +79,45 @@
       </div>
     </div>
 
+    <!-- 云同步 -->
+    <ClientOnly>
+      <div class="card mb-5">
+        <div class="flex items-start gap-3">
+          <div
+            class="w-10 h-10 rounded-xl grid place-items-center shrink-0"
+            :style="cloudBlockStyle"
+          >
+            <Icon :name="`lucide:${cloudIcon}`" class="w-5 h-5" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="section-title m-0 mb-1 inline-flex items-center gap-2">
+              云端同步
+              <SyncStatus />
+            </h2>
+            <p v-if="user" class="section-sub m-0">
+              已登录 <strong class="text-fg">{{ user.email }}</strong>
+              <span v-if="lastSyncedAt" class="text-faint">
+                · 上次同步:{{ formatTs(lastSyncedAt) }}
+              </span>
+            </p>
+            <p v-else class="section-sub m-0">
+              登录后自动云端备份,换设备无缝接续学习进度。
+            </p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button v-if="user" class="btn btn--sm" @click="onSyncNow">
+              <Icon name="lucide:refresh-cw" class="w-3.5 h-3.5" />
+              立即同步
+            </button>
+            <NuxtLink v-else to="/login" class="btn btn--sm">
+              <Icon name="lucide:log-in" class="w-3.5 h-3.5" />
+              登录
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+    </ClientOnly>
+
     <!-- 数据管理 -->
     <div class="card">
       <h2 class="section-title mb-1">数据管理</h2>
@@ -103,10 +142,33 @@
 </template>
 
 <script setup lang="ts">
+import { authClient } from '~/lib/auth-client'
+
 const store = useQuizStore()
 const bank = useBank()
 const overall = computed(() => store.overall)
 const fileInput = ref<HTMLInputElement | null>(null)
+
+const sync = import.meta.client ? useCloudSync() : null
+const session = authClient.useSession()
+const user = computed(() => (session.value as any)?.data?.user ?? null)
+const lastSyncedAt = computed(() => sync?.lastSyncedAt.value || 0)
+
+const cloudIcon = computed(() => (user.value ? 'cloud-check' : 'cloud-off'))
+const cloudBlockStyle = computed(() =>
+  user.value
+    ? { background: 'var(--ok-soft)', color: 'var(--ok)' }
+    : { background: 'var(--bg-elev-2)', color: 'var(--fg-mute)' }
+)
+
+function formatTs(ts: number): string {
+  if (!ts) return '—'
+  return new Date(ts).toLocaleString()
+}
+
+async function onSyncNow() {
+  await sync?.syncNow()
+}
 
 function chShort(id: string) {
   if (id === 'ch00') return '导'

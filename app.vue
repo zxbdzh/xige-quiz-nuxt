@@ -11,6 +11,11 @@
 <script setup lang="ts">
 const meta = useBankMeta()
 
+// 客户端挂载云同步:监听 session 变化 + debounce push
+if (import.meta.client) {
+  useCloudSync()
+}
+
 useHead({
   link: [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

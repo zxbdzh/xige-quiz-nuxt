@@ -52,6 +52,9 @@ export default defineNuxtConfig({
     public: {
       appName: '习概练习题库',
       version: '1.0.0',
+      // 在 SSR 启动时根据环境变量判断 GitHub OAuth 是否启用,
+      // 供 login / signup 页面决定是否显示 GitHub 入口
+      hasGithubOAuth: !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
     },
   },
 
@@ -61,6 +64,9 @@ export default defineNuxtConfig({
     '/practice/**': { ssr: false },
     '/wrong': { ssr: false },
     '/stats': { ssr: false },
+    // 登录 / 注册依赖 authClient,走 CSR 避免 hydration 抖动
+    '/login': { ssr: false },
+    '/signup': { ssr: false },
   },
 
   // 我们不用路由 manifest 预取,关掉避免 Nuxt 3.21 + pnpm 严格 hoisting 下
