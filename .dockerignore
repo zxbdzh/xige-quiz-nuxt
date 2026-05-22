@@ -1,0 +1,42 @@
+# 构建产物（多阶段构建已在 Dockerfile 内复制）
+.output/
+node_modules/
+.pnpm-store/
+
+# 开发文件
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker 相关（不需要打进镜像）
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# 工具脚本
+tools/
+*.py
+
+# 文档
+README.md
+CLAUDE.md
+*.md
+
+# 测试
+__tests__/
+*.test.ts
+*.spec.ts
+
+# 类型定义
+types/
