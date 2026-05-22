@@ -1,11 +1,14 @@
 # ============ 构建阶段 ============
 FROM node:22-alpine AS builder
+ARG NPM_REGISTRY=https://registry.npmmirror.com
 
 WORKDIR /app
 
-# pnpm
+# 使用国内镜像安装 pnpm
+RUN npm install -g pnpm --registry=$NPM_REGISTRY
+
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --registry=$NPM_REGISTRY
 
 # 复制源码并构建
 COPY . .
@@ -13,12 +16,15 @@ RUN pnpm build
 
 # ============ 运行阶段 ============
 FROM node:22-alpine AS runner
+ARG NPM_REGISTRY=https://registry.npmmirror.com
 
 WORKDIR /app
 
-# 安装生产依赖（只复制必要的）
+# 使用 npm 安装生产依赖
+RUN npm install -g pnpm --registry=$NPM_REGISTRY
+
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --prod --registry=$NPM_REGISTRY
 
 # 复制构建产物
 COPY --from=builder /app/.output ./.output
