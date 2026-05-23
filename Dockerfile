@@ -10,7 +10,8 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 # 安装 pnpm（利用 Docker 缓存层）
-RUN npm install -g pnpm@11 --registry=$NPM_REGISTRY
+# 使用 pnpm@9 避免 v11 的构建脚本批准问题
+RUN npm install -g pnpm@9 --registry=$NPM_REGISTRY
 
 # 设置 npm 镜像
 RUN pnpm config set registry $NPM_REGISTRY
@@ -24,8 +25,11 @@ RUN pnpm install --frozen-lockfile
 # 步骤2: 复制源码并构建（依赖不变时跳过）
 COPY . .
 
+# 确保 shamefully-hoist 配置在构建时生效
+RUN echo 'shamefully-hoist=true' >> .npmrc 2>/dev/null || true
+
 # 构建（会为 linux 平台编译 better-sqlite3）
-RUN pnpm build
+RUN npx nuxt build
 
 # ============ 运行阶段 ============
 FROM node:22-alpine AS runner

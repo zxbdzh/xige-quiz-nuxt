@@ -7,6 +7,9 @@ set -e
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
 
+# 国内镜像加速（解决 Docker Hub 访问问题）
+export DOCKER_REGISTRY_MIRROR="https://docker.1ms.run"
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
