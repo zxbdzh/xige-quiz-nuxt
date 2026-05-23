@@ -17,6 +17,8 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Shanghai
+      # 子路径部署前缀(需与 Dockerfile 构建期一致),根路径部署改为 /
+      - NUXT_APP_BASE_URL=/quiz/
 
 volumes:
   quiz_data:

@@ -9,9 +9,11 @@ import { createAuthClient } from 'better-auth/vue'
  */
 export function useAuth() {
   const url = useRequestURL()
+  const base = useRuntimeConfig().app.baseURL
+  const authBase = (base === '/' ? '' : base.replace(/\/+$/, '')) + '/api/auth'
   const headers = import.meta.server ? useRequestHeaders(['cookie']) : undefined
   return createAuthClient({
-    baseURL: url.origin,
+    baseURL: url.origin + authBase,
     fetchOptions: { headers },
   })
 }
