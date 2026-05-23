@@ -6,8 +6,9 @@ ARG NPM_REGISTRY=https://registry.npmmirror.com
 
 WORKDIR /app
 
-# 预装构建工具（利用 Docker 缓存层）
-RUN apk add --no-cache python3 make g++
+# 换 apk 国内源(否则从境外拉取 gcc 工具链极慢),再装构建工具
+RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \
+ && apk add --no-cache python3 make g++
 
 # 安装 pnpm（利用 Docker 缓存层）
 # 使用 pnpm@9 避免 v11 的构建脚本批准问题
@@ -41,8 +42,9 @@ LABEL maintainer="xige-quiz"
 
 WORKDIR /app
 
-# 安装 dumb-init（优雅处理 PID 1 信号）
-RUN apk add --no-cache dumb-init
+# 换 apk 国内源后安装 dumb-init（优雅处理 PID 1 信号）
+RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \
+ && apk add --no-cache dumb-init
 
 # 复制 node_modules（包含已编译的 better-sqlite3）
 COPY --from=builder --chown=node:node /app/node_modules ./node_modules
