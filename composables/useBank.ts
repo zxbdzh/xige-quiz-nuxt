@@ -4,7 +4,6 @@ import type { Bank, BankMetaExt, Chapter, Mcq } from '~/types/bank'
 export const useBank = () => {
   return useFetch<Bank>('/api/bank', {
     key: 'bank',
-    baseURL: apiBaseURL(),
     server: true,
     default: () => ({
       meta: { source: '', subject: '', totalChapters: 0, totalMcq: 0, totalKp: 0 },
@@ -17,7 +16,6 @@ export const useBank = () => {
 export const useBankMeta = () => {
   return useFetch<BankMetaExt>('/api/meta', {
     key: 'bank-meta',
-    baseURL: apiBaseURL(),
     server: true,
     default: () => ({
       source: '',
@@ -34,7 +32,6 @@ export const useBankMeta = () => {
 export const useChapter = (id: Ref<string> | ComputedRef<string>) => {
   return useFetch<Chapter>(() => `/api/chapter/${encodeURIComponent(unref(id))}`, {
     key: () => `chap-${unref(id)}`,
-    baseURL: apiBaseURL(),
     server: true,
     watch: [id],
   })
@@ -42,11 +39,11 @@ export const useChapter = (id: Ref<string> | ComputedRef<string>) => {
 
 /** 随机抽题 */
 export const fetchRandom = async (count = 10, chapter = 'all') => {
-  return await $fetch<Mcq[]>('/api/random', { baseURL: apiBaseURL(), params: { count, chapter } })
+  return await $fetch<Mcq[]>('/api/random', { params: { count, chapter } })
 }
 
 /** 批量取题(错题本) */
 export const fetchQuestions = async (ids: string[]) => {
   if (!ids.length) return []
-  return await $fetch<Mcq[]>('/api/questions', { baseURL: apiBaseURL(), params: { ids: ids.join(',') } })
+  return await $fetch<Mcq[]>('/api/questions', { params: { ids: ids.join(',') } })
 }

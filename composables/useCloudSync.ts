@@ -69,7 +69,6 @@ export function useCloudSync(): UseCloudSyncReturn {
         remote?: RemoteSnapshot
       }>('/api/sync/state', {
         method: 'POST',
-        baseURL: apiBaseURL(),
         body: {
           history: store.history,
           wrong: store.wrong,
@@ -100,7 +99,7 @@ export function useCloudSync(): UseCloudSyncReturn {
     if (!currentUserId()) return
     status.value = 'syncing'
     try {
-      const remote = await $fetch<RemoteSnapshot>('/api/sync/state', { baseURL: apiBaseURL() })
+      const remote = await $fetch<RemoteSnapshot>('/api/sync/state')
       const hasLocal =
         store.updatedAt > 0 ||
         Object.keys(store.history).length > 0 ||

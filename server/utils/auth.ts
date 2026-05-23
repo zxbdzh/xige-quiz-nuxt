@@ -6,17 +6,7 @@ const githubId = process.env.GITHUB_CLIENT_ID
 const githubSecret = process.env.GITHUB_CLIENT_SECRET
 const hasGithub = !!(githubId && githubSecret)
 
-// 应用对外 origin(纯域名,不含子路径)与子路径前缀
-const origin = process.env.BETTER_AUTH_URL || 'http://localhost:3000'
-const appBase = process.env.NUXT_APP_BASE_URL || '/'
-// better-auth 路由在子路径下的实际挂载点,如 /quiz/api/auth
-const authBasePath = (appBase === '/' ? '' : appBase.replace(/\/+$/, '')) + '/api/auth'
-
 export const auth = betterAuth({
-  // origin + 子路径下的实际挂载点(/quiz/api/auth),用于生成正确的 OAuth callback
-  baseURL: origin,
-  basePath: authBasePath,
-
   database: drizzleAdapter(db, {
     provider: 'sqlite',
     schema: {
@@ -55,7 +45,7 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // 每天滑动续期
   },
 
-  trustedOrigins: [origin],
+  trustedOrigins: [process.env.BETTER_AUTH_URL || 'http://localhost:3000'],
 
   advanced: {
     cookies: {

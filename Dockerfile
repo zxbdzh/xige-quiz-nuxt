@@ -29,9 +29,6 @@ COPY . .
 # 确保 shamefully-hoist 配置在构建时生效
 RUN echo 'shamefully-hoist=true' >> .npmrc 2>/dev/null || true
 
-# 子路径部署前缀(改路径只需改这里 + runner ENV + docker-compose + nginx)
-ENV NUXT_APP_BASE_URL=/quiz/
-
 # 构建（会为 linux 平台编译 better-sqlite3）
 RUN npx nuxt build
 
@@ -52,6 +49,9 @@ COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 # 复制构建产物
 COPY --from=builder --chown=node:node /app/.output ./.output
 
+# 复制题库数据(bank.ts 运行时从 server/data/bank.json 读取)
+COPY --from=builder --chown=node:node /app/server/data ./server/data
+
 # 创建数据目录（持久化 SQLite）
 RUN mkdir -p data && chown -R node:node data
 
@@ -62,12 +62,10 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
-# 子路径前缀(Nitro / better-auth 服务端运行时读取),需与构建期一致
-ENV NUXT_APP_BASE_URL=/quiz/
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:3000/quiz/api/meta || exit 1
+  CMD wget -qO- http://localhost:3000/api/meta || exit 1
 
 # 使用 dumb-init 优雅处理信号
 CMD ["dumb-init", "node", ".output/server/index.mjs"]

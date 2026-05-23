@@ -37,8 +37,6 @@ export default defineNuxtConfig({
   },
 
   app: {
-    // 子路径部署:由 NUXT_APP_BASE_URL 驱动(如 /quiz/),默认根路径
-    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       htmlAttrs: { lang: 'zh-CN' },
       title: '习概练习题库 · 2025',
@@ -79,10 +77,6 @@ export default defineNuxtConfig({
 
   // 帮 Vite 显式跳过这个虚拟模块的预打包探测
   vite: {
-    // 把 baseURL 固化为构建期常量,供模块级(无 Nuxt context)的 better-auth client 使用
-    define: {
-      __APP_BASE__: JSON.stringify(process.env.NUXT_APP_BASE_URL || '/'),
-    },
     optimizeDeps: {
       exclude: ['#app-manifest'],
     },
