@@ -12,8 +12,11 @@ services:
     volumes:
       # 持久化 SQLite 数据库
       - quiz_data:/app/data
-      # 生产环境配置
-      - ./prod.env:/app/.env:ro
+    # 生产环境配置:用 env_file 注入到进程环境变量
+    # (node .output/server/index.mjs 直接起服务时不会读 .env 文件,
+    #  必须由 docker 把变量注入容器环境,better-auth / GitHub 凭据才能生效)
+    env_file:
+      - ./prod.env
     environment:
       - NODE_ENV=production
       - TZ=Asia/Shanghai

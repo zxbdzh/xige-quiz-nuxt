@@ -52,9 +52,10 @@ export default defineNuxtConfig({
     public: {
       appName: '习概练习题库',
       version: '1.0.0',
-      // 在 SSR 启动时根据环境变量判断 GitHub OAuth 是否启用,
-      // 供 login / signup 页面决定是否显示 GitHub 入口
-      hasGithubOAuth: !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
+      // 是否显示 GitHub 登录入口。
+      // 默认值在 build 时求值(Docker 构建期没有凭据 ⇒ false);
+      // 运行时通过环境变量 NUXT_PUBLIC_HAS_GITHUB_LOGIN=true 覆盖(见 docker-compose env_file)。
+      hasGithubLogin: !!(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
     },
   },
 

@@ -15,7 +15,7 @@ export function useEmailAuth(opts: UseEmailAuthOptions) {
   const error = ref('')
   const loading = ref(false)
 
-  const hasGithub = computed(() => config.public.hasGithubOAuth)
+  const hasGithub = computed(() => config.public.hasGithubLogin)
 
   async function submit() {
     error.value = ''
