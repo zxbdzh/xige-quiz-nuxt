@@ -52,6 +52,9 @@ COPY --from=builder --chown=node:node /app/.output ./.output
 # 复制题库数据(bank.ts 运行时从 server/data/bank.json 读取)
 COPY --from=builder --chown=node:node /app/server/data ./server/data
 
+# 复制 drizzle 迁移文件(server/db/index.ts 启动时自动执行迁移建表)
+COPY --from=builder --chown=node:node /app/drizzle ./drizzle
+
 # 创建数据目录（持久化 SQLite）
 RUN mkdir -p data && chown -R node:node data
 
