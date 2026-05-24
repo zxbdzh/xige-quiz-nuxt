@@ -20,6 +20,10 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Shanghai
+    # 允许容器内用 host.docker.internal 访问宿主机上的代理(GitHub OAuth 出网)
+    # 若 prod.env 里设了 HTTPS_PROXY=http://host.docker.internal:端口 才需要
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 volumes:
   quiz_data:

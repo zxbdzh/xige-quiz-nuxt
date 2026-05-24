@@ -19,13 +19,14 @@
   "dependencies": {
     "@iconify-json/lucide": "^1.2.18",
     "@nuxt/icon": "^1.10.3",
-    "@pinia/nuxt": "^0.5.5",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
+    "@pinia/nuxt": "^0.5.5",
     "better-auth": "^1.2.0",
     "better-sqlite3": "^11.5.0",
     "drizzle-orm": "^0.36.4",
     "nuxt": "^3.13.2",
     "pinia": "^2.2.4",
+    "undici": "^8.3.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
