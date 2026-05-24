@@ -7,8 +7,9 @@ services:
         NPM_REGISTRY: "https://registry.npmmirror.com"
     container_name: xige-quiz
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    # host 网络:容器共用宿主机网络栈,127.0.0.1 直通,可直接访问宿主机上的 mihomo 代理
+    # 代价:端口映射(ports)失效,容器直接绑定宿主机 3000 端口,效果等同
+    network_mode: host
     volumes:
       # 持久化 SQLite 数据库
       - quiz_data:/app/data
@@ -20,10 +21,6 @@ services:
     environment:
       - NODE_ENV=production
       - TZ=Asia/Shanghai
-    # 允许容器内用 host.docker.internal 访问宿主机上的代理(GitHub OAuth 出网)
-    # 若 prod.env 里设了 HTTPS_PROXY=http://host.docker.internal:端口 才需要
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
 volumes:
   quiz_data:
